@@ -238,7 +238,7 @@ return [
         ],
         [
             'text' => 'Categorias',
-            'url'  => 'admin/blog',
+            'url'  => '/home',
             #'can'  => 'manage-blog',
         ],
         [
