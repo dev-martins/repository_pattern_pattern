@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Contratcs;
+namespace App\Repositories\Contracts;
 
 interface RepositoriesInterface{
     public function getAll();

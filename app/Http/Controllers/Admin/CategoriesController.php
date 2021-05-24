@@ -7,16 +7,21 @@ use Illuminate\support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Http\Requests\CreateUpdateCategory;
+use App\Repositories\Contracts\CategoryRepositoryInterface;
 
 class CategoriesController extends Controller
 {
-    /**
-     * retorna todas as categorias
-     */
+    protected $repository;
+
+    public function __construct(CategoryRepositoryInterface $repository)
+    {
+        $this->repository = $repository;
+    }
+
     public function getCategories()
     {
         try {
-            $categories = DB::table('categories')->get();
+            $categories = $this->repository->getAll();
             return response()->json($categories, 200);
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 500);
@@ -30,7 +35,7 @@ class CategoriesController extends Controller
     public function getCategory($id)
     {
         try {
-            $category = DB::table('categories')->where('id', $id)->get();
+            $category = $this->repository->findById($id);
             return response()->json($category, 200);
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 500);
@@ -45,27 +50,26 @@ class CategoriesController extends Controller
     {
         try {
             $data = $request->all();
-        $categories = DB::table('categories')
-            ->where(function ($query) use ($data) {
+            $categories = DB::table('categories')
+                ->where(function ($query) use ($data) {
 
-                if (isset($data['title'])) {
-                    $query->where('title', $data['title']);
-                }
+                    if (isset($data['title'])) {
+                        $query->where('title', $data['title']);
+                    }
 
-                if(isset($data['url'])){
-                    $query->where('url', $data['url']);
-                }
+                    if (isset($data['url'])) {
+                        $query->where('url', $data['url']);
+                    }
 
-                if(isset($data['description'])){
-                    $query->where('description', 'LIKE',"%{$data['description']}%");
-                }
-            })->orderBy('id','DESC')->paginate(10);
+                    if (isset($data['description'])) {
+                        $query->where('description', 'LIKE', "%{$data['description']}%");
+                    }
+                })->orderBy('id', 'DESC')->paginate(10);
 
             return response()->json($categories, 200);
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 500);
         }
-
     }
 
     /**
@@ -75,11 +79,7 @@ class CategoriesController extends Controller
     public function createCategory(CreateUpdateCategory $request)
     {
         try {
-            DB::table('categories')->insert([
-                'title'         => $request->title,
-                'url'           => $request->url,
-                'description'   => $request->description
-            ]);
+            $this->repository->store($request->input());
             return response()->json(['msg' => 'Categoria cadastrada'], 201);
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 500);
@@ -93,7 +93,7 @@ class CategoriesController extends Controller
     public function deleteCategory($id)
     {
         try {
-            DB::table('categories')->where('id', $id)->delete();
+            $this->repository->delete($id);
             return response()->json([], 200);
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 500);
@@ -107,11 +107,7 @@ class CategoriesController extends Controller
     public function updateCategory(CreateUpdateCategory $request, $id)
     {
         try {
-            DB::table('categories')->where('id', $id)->update([
-                'title'         => $request->title,
-                'url'           => $request->url,
-                'description'   => $request->description
-            ]);
+            $this->repository->update($id, $request->input());
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 500);
         }

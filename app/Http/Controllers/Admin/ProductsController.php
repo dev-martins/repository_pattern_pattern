@@ -6,55 +6,62 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Http\Requests\ProductFormRequest;
+use App\Repositories\Contracts\ProductRepositoryInterface;
 
 class ProductsController extends Controller
 {
-    public function getProducts(Product $product)
+    protected $repository;
+
+    public function __construct(ProductRepositoryInterface $repository)
+    {
+        $this->repository = $repository;
+    }
+
+    public function getProducts()
     {
         try {
-            $products = $product->with('category')->get();
+            $products = $this->repository->getAll();
             return response()->json($products, 200);
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 500);
         }
     }
 
-    public function getProduct(Product $product, $id)
+    public function getProduct($id)
     {
         try {
-            $product = $product->with('category')->find($id);
+            $product = $this->repository->findById($id);
             return response()->json($product, 200);
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 500);
         }
     }
 
-    public function createProduct(ProductFormRequest $request, Product $product)
+    public function createProduct(ProductFormRequest $request)
     {
         try {
-            $product->create($request->all());
+            $this->repository->store($request->all());
             return response()->json(["msg" => "Produto cadastrado"], 200);
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 500);
         }
     }
 
-    public function deleteProduct(Product $product,$id)
+    public function deleteProduct($id)
     {
         try {
-            $product = $product->find($id); 
-            $product->delete();
+            $this->repository->delete($id);
             return response()->json(["msg" => "Produto removido"], 200);
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 500);
         }
     }
 
-    public function updateProduct(ProductFormRequest $request,Product $product,$id){
+    public function updateProduct(ProductFormRequest $request, $id)
+    {
         try {
-            $product = $product->find($id); 
-            $product->update($request->all());
-            return response()->json(["msg" => "Produto autalizado"], 200);
+            $this->repository->update($id, $request->all());
+            return response()->json(["msg" => "Produto atualizado"], 200);
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 500);
         }
