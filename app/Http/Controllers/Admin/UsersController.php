@@ -90,8 +90,9 @@ class UsersController extends Controller
         }
     }
 
-    public function searchUser()
+    public function searchUser(Request $request)
     {
-        return "OK";
+        $users = $this->repository->search($request->input());
+        return $users;
     }
 }

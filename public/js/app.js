@@ -2850,31 +2850,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 Vue.use(vue_toast_notification__WEBPACK_IMPORTED_MODULE_0___default.a);
 var localHost = "http://127.0.0.1:8000";
@@ -2885,6 +2860,7 @@ var localHost = "http://127.0.0.1:8000";
       cadastro: true,
       name: "",
       email: "",
+      password: "",
       id: ""
     };
   },
@@ -2921,101 +2897,96 @@ var localHost = "http://127.0.0.1:8000";
         });
       });
     },
-    // createCategory() {
-    //   this.sendData = new FormData();
-    //   this.name == "" ? "" : this.sendData.append("name", this.name);
-    //   this.price == "" ? "" : this.sendData.append("price", this.price);
-    //   this.image == "" ? "" : this.sendData.append("image", this.image);
-    //   this.url == "" ? "" : this.sendData.append("url", this.url);
-    //   this.category_selected == ""
-    //     ? ""
-    //     : this.sendData.append("category_id", this.category_selected);
-    //   this.description == ""
-    //     ? ""
-    //     : this.sendData.append("description", this.description);
-    //   window.axios
-    //     .post(`${localHost}/api/v1/products`, this.sendData)
-    //     .then((res) => {
-    //       Vue.$toast.open({
-    //         message: res.data.msg,
-    //         type: "success",
-    //         position: "top-right",
-    //         // all of other options may go here
-    //       });
-    //       this.listCategories();
-    //       this.fecharModal();
-    //     })
-    //     .catch((erro) => {
-    //       Vue.$toast.open({
-    //         message: erro.response.data,
-    //         type: "error",
-    //         position: "top-right",
-    //         // all of other options may go here
-    //       });
-    //     });
-    // },
-    // deletar(id) {
-    //   window.axios
-    //     .delete(`${localHost}/api/v1/products/${id}`, this.sendData)
-    //     .then((res) => {
-    //       Vue.$toast.open({
-    //         message: "Produto removido!",
-    //         type: "success",
-    //         position: "top-right",
-    //         // all of other options may go here
-    //       });
-    //       this.listCategories();
-    //     })
-    //     .catch((erro) => {
-    //       Vue.$toast.open({
-    //         message: "Ocorreu um erro!",
-    //         type: "error",
-    //         position: "top-right",
-    //         // all of other options may go here
-    //       });
-    //     });
-    // },
-    // atualizar() {
-    //   window.axios
-    //     .put(`${localHost}/api/v1/products/${this.id}`, {
-    //       name: this.name,
-    //       url: this.url,
-    //       description: this.description,
-    //       price: this.price,
-    //       image: this.image,
-    //     })
-    //     .then((res) => {
-    //       Vue.$toast.open({
-    //         message: "Categoria atualizada!",
-    //         type: "success",
-    //         position: "top-right",
-    //         // all of other options may go here
-    //       });
-    //       this.listCategories();
-    //       this.fecharModal();
-    //     })
-    //     .catch((erro) => {
-    //       Vue.$toast.open({
-    //         message: "Ocorreu um erro!",
-    //         type: "error",
-    //         position: "top-right",
-    //         // all of other options may go here
-    //       });
-    //     });
-    // },
+    create: function create() {
+      var _this2 = this;
+
+      this.sendData = new FormData();
+      this.name == "" ? "" : this.sendData.append("name", this.name);
+      this.email == "" ? "" : this.sendData.append("email", this.email);
+      this.password == "" ? "" : this.sendData.append("password", this.password);
+      window.axios.post("".concat(localHost, "/api/v1/users"), this.sendData).then(function (res) {
+        Vue.$toast.open({
+          message: res.data.msg,
+          type: "success",
+          position: "top-right" // all of other options may go here
+
+        });
+
+        _this2.list();
+
+        _this2.fecharModal();
+      })["catch"](function (erro) {
+        Vue.$toast.open({
+          message: erro.response.data.msg,
+          type: "error",
+          position: "top-right" // all of other options may go here
+
+        });
+      });
+    },
+    deletar: function deletar(id) {
+      var _this3 = this;
+
+      window.axios["delete"]("".concat(localHost, "/api/v1/users/").concat(id), this.sendData).then(function (res) {
+        Vue.$toast.open({
+          message: "Cadastro removido!",
+          type: "success",
+          position: "top-right" // all of other options may go here
+
+        });
+
+        _this3.list();
+      })["catch"](function (erro) {
+        Vue.$toast.open({
+          message: erro.response.data.msg,
+          type: "error",
+          position: "top-right" // all of other options may go here
+
+        });
+      });
+    },
+    atualizar: function atualizar() {
+      var _this4 = this;
+
+      window.axios.put("".concat(localHost, "/api/v1/users/").concat(this.id), {
+        name: this.name,
+        email: this.email,
+        password: this.password
+      }).then(function (res) {
+        Vue.$toast.open({
+          message: "Cadastro atualizado!",
+          type: "success",
+          position: "top-right" // all of other options may go here
+
+        });
+
+        _this4.listCategories();
+
+        _this4.fecharModal();
+      })["catch"](function (erro) {
+        Vue.$toast.open({
+          message: erro.response.data.msg,
+          type: "error",
+          position: "top-right" // all of other options may go here
+
+        });
+      });
+    },
     fecharModal: function fecharModal() {
       $(".close").trigger("click");
     },
     limparModal: function limparModal() {
       this.name = "";
       this.email = "";
+      this.password = "";
     },
     titleModal: function titleModal(name) {
       $(".modal-title").text(name);
     },
-    editarDados: function editarDados(name, email) {
+    editarDados: function editarDados(name, email, password) {
       this.name = name;
       this.email = email;
+      this.password = password;
       this.cadastro = false;
       this.titleModal("Editar dados");
       $("#myModal").modal();
@@ -40090,7 +40061,7 @@ var render = function() {
             return _c("tr", { key: user.id }, [
               _c("td", [_vm._v(_vm._s(user.name))]),
               _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(user.email, 1))]),
+              _c("td", [_vm._v(_vm._s(user.email))]),
               _vm._v(" "),
               _c(
                 "td",
@@ -40105,7 +40076,11 @@ var render = function() {
                       staticClass: "btn btn-primary",
                       on: {
                         click: function($event) {
-                          return _vm.editarDados(user.name, user.email)
+                          return _vm.editarDados(
+                            user.name,
+                            user.email,
+                            user.password
+                          )
                         }
                       }
                     },
@@ -40118,7 +40093,11 @@ var render = function() {
                       staticClass: "btn btn-success",
                       on: {
                         click: function($event) {
-                          return _vm.editarDados(user.name, user.email)
+                          return _vm.editarDados(
+                            user.name,
+                            user.email,
+                            _vm.use.password
+                          )
                         }
                       }
                     },
@@ -40177,7 +40156,7 @@ var render = function() {
           _c("div", { staticClass: "modal-body" }, [
             _c("form", [
               _c("div", { staticClass: "row" }, [
-                _c("div", { staticClass: "col-md-6" }, [
+                _c("div", { staticClass: "col-md-12" }, [
                   _c("div", { staticClass: "form-group" }, [
                     _c(
                       "label",
@@ -40210,119 +40189,16 @@ var render = function() {
                       }
                     })
                   ])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "col-md-6" }, [
-                  _c("div", { staticClass: "form-group" }, [
-                    _c(
-                      "label",
-                      { staticClass: "col-form-label", attrs: { for: "url" } },
-                      [_vm._v("URL:")]
-                    ),
-                    _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.url,
-                          expression: "url"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      attrs: { type: "text", id: "url" },
-                      domProps: { value: _vm.url },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.url = $event.target.value
-                        }
-                      }
-                    })
-                  ])
                 ])
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "row" }, [
-                _c("div", { staticClass: "col-md-6" }, [
+                _c("div", { staticClass: "col-md-12" }, [
                   _c("div", { staticClass: "form-group" }, [
                     _c(
                       "label",
-                      {
-                        staticClass: "col-form-label",
-                        attrs: { for: "description" }
-                      },
-                      [_vm._v("Categorias:")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "select",
-                      {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.category_selected,
-                            expression: "category_selected"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        on: {
-                          change: function($event) {
-                            var $$selectedVal = Array.prototype.filter
-                              .call($event.target.options, function(o) {
-                                return o.selected
-                              })
-                              .map(function(o) {
-                                var val = "_value" in o ? o._value : o.value
-                                return val
-                              })
-                            _vm.category_selected = $event.target.multiple
-                              ? $$selectedVal
-                              : $$selectedVal[0]
-                          }
-                        }
-                      },
-                      [
-                        _c(
-                          "option",
-                          { attrs: { disabled: "", selected: "" } },
-                          [_vm._v("Escolha uma categoria")]
-                        ),
-                        _vm._v(" "),
-                        _vm._l(_vm.products, function(product) {
-                          return _c(
-                            "option",
-                            {
-                              key: product.id,
-                              domProps: { value: product.category.id }
-                            },
-                            [
-                              _vm._v(
-                                "\n                      " +
-                                  _vm._s(product.category.title) +
-                                  "\n                    "
-                              )
-                            ]
-                          )
-                        })
-                      ],
-                      2
-                    )
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "col-md-6" }, [
-                  _c("div", { staticClass: "form-group" }, [
-                    _c(
-                      "label",
-                      {
-                        staticClass: "col-form-label",
-                        attrs: { for: "price" }
-                      },
-                      [_vm._v("Preço:")]
+                      { staticClass: "col-form-label", attrs: { for: "url" } },
+                      [_vm._v("Email:")]
                     ),
                     _vm._v(" "),
                     _c("input", {
@@ -40330,19 +40206,19 @@ var render = function() {
                         {
                           name: "model",
                           rawName: "v-model",
-                          value: _vm.price,
-                          expression: "price"
+                          value: _vm.email,
+                          expression: "email"
                         }
                       ],
                       staticClass: "form-control",
-                      attrs: { type: "text", id: "price" },
-                      domProps: { value: _vm.price },
+                      attrs: { type: "text", id: "url" },
+                      domProps: { value: _vm.email },
                       on: {
                         input: function($event) {
                           if ($event.target.composing) {
                             return
                           }
-                          _vm.price = $event.target.value
+                          _vm.email = $event.target.value
                         }
                       }
                     })
@@ -40355,31 +40231,28 @@ var render = function() {
                   _c("div", { staticClass: "form-group" }, [
                     _c(
                       "label",
-                      {
-                        staticClass: "col-form-label",
-                        attrs: { for: "description" }
-                      },
-                      [_vm._v("Descrição:")]
+                      { staticClass: "col-form-label", attrs: { for: "url" } },
+                      [_vm._v("Senha:")]
                     ),
                     _vm._v(" "),
-                    _c("textarea", {
+                    _c("input", {
                       directives: [
                         {
                           name: "model",
                           rawName: "v-model",
-                          value: _vm.description,
-                          expression: "description"
+                          value: _vm.password,
+                          expression: "password"
                         }
                       ],
                       staticClass: "form-control",
-                      attrs: { id: "description", rows: "3" },
-                      domProps: { value: _vm.description },
+                      attrs: { type: "text", id: "url" },
+                      domProps: { value: _vm.password },
                       on: {
                         input: function($event) {
                           if ($event.target.composing) {
                             return
                           }
-                          _vm.description = $event.target.value
+                          _vm.password = $event.target.value
                         }
                       }
                     })
@@ -40412,7 +40285,7 @@ var render = function() {
                     attrs: { type: "button" },
                     on: {
                       click: function($event) {
-                        return _vm.createCategory()
+                        return _vm.create()
                       }
                     }
                   },

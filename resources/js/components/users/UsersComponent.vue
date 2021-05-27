@@ -28,7 +28,7 @@
       <tbody>
         <tr v-for="user in users" :key="user.id">
           <td>{{ user.name }}</td>
-          <td>{{ user.email, 1 }}</td>
+          <td>{{ user.email }}</td>
           <td class="btn-group d-flex flex-row justify-content-center">
             <button
               class="btn btn-primary"
@@ -36,6 +36,7 @@
                 editarDados(
                   user.name,
                   user.email,
+                  user.password
                 )
               "
             >
@@ -47,6 +48,7 @@
                 editarDados(
                   user.name,
                   user.email,
+                  use.password
                 )
               "
             >
@@ -87,7 +89,7 @@
           <div class="modal-body">
             <form>
               <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                   <div class="form-group">
                     <label for="title" class="col-form-label">Nome:</label>
                     <input
@@ -98,41 +100,16 @@
                     />
                   </div>
                 </div>
-                <div class="col-md-6">
+              </div>
+              <div class="row">
+                <div class="col-md-12">
                   <div class="form-group">
-                    <label for="url" class="col-form-label">URL:</label>
+                    <label for="url" class="col-form-label">Email:</label>
                     <input
                       type="text"
                       class="form-control"
                       id="url"
-                      v-model="url"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="description" class="col-form-label"
-                      >Categorias:</label
-                    >
-                    <select class="form-control" v-model="category_selected">
-                      <option disabled selected>Escolha uma categoria</option>
-                      <option v-for="product in products" :key="product.id" v-bind:value="product.category.id">
-                        {{ product.category.title }}
-                      </option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="price" class="col-form-label">Preço:</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="price"
-                      v-model="price"
+                      v-model="email"
                     />
                   </div>
                 </div>
@@ -140,15 +117,13 @@
               <div class="row">
                 <div class="col-md-12">
                   <div class="form-group">
-                    <label for="description" class="col-form-label"
-                      >Descrição:</label
-                    >
-                    <textarea
-                      v-model="description"
+                    <label for="url" class="col-form-label">Senha:</label>
+                    <input
+                      type="text"
                       class="form-control"
-                      id="description"
-                      rows="3"
-                    ></textarea>
+                      id="url"
+                      v-model="password"
+                    />
                   </div>
                 </div>
               </div>
@@ -169,7 +144,7 @@
               v-if="cadastro == true"
               type="button"
               class="btn btn-primary btn-sm"
-              @click="createCategory()"
+              @click="create()"
             >
               Salvar
             </button>
@@ -200,6 +175,7 @@ export default {
       cadastro: true,
       name: "",
       email: "",
+      password:"",
       id: "",
     };
   },
@@ -237,103 +213,96 @@ export default {
           });
         });
     },
-    // createCategory() {
-    //   this.sendData = new FormData();
-    //   this.name == "" ? "" : this.sendData.append("name", this.name);
-    //   this.price == "" ? "" : this.sendData.append("price", this.price);
-    //   this.image == "" ? "" : this.sendData.append("image", this.image);
-    //   this.url == "" ? "" : this.sendData.append("url", this.url);
-    //   this.category_selected == ""
-    //     ? ""
-    //     : this.sendData.append("category_id", this.category_selected);
-    //   this.description == ""
-    //     ? ""
-    //     : this.sendData.append("description", this.description);
+    create() {
+      this.sendData = new FormData();
+      this.name == "" ? "" : this.sendData.append("name", this.name);
+      this.email == "" ? "" : this.sendData.append("email", this.email);
+      this.password == "" ? "" : this.sendData.append("password", this.password);
 
-    //   window.axios
-    //     .post(`${localHost}/api/v1/products`, this.sendData)
-    //     .then((res) => {
-    //       Vue.$toast.open({
-    //         message: res.data.msg,
-    //         type: "success",
-    //         position: "top-right",
-    //         // all of other options may go here
-    //       });
+      window.axios
+        .post(`${localHost}/api/v1/users`, this.sendData)
+        .then((res) => {
+          Vue.$toast.open({
+            message: res.data.msg,
+            type: "success",
+            position: "top-right",
+            // all of other options may go here
+          });
 
-    //       this.listCategories();
-    //       this.fecharModal();
-    //     })
-    //     .catch((erro) => {
-    //       Vue.$toast.open({
-    //         message: erro.response.data,
-    //         type: "error",
-    //         position: "top-right",
-    //         // all of other options may go here
-    //       });
-    //     });
-    // },
-    // deletar(id) {
-    //   window.axios
-    //     .delete(`${localHost}/api/v1/products/${id}`, this.sendData)
-    //     .then((res) => {
-    //       Vue.$toast.open({
-    //         message: "Produto removido!",
-    //         type: "success",
-    //         position: "top-right",
-    //         // all of other options may go here
-    //       });
-    //       this.listCategories();
-    //     })
-    //     .catch((erro) => {
-    //       Vue.$toast.open({
-    //         message: "Ocorreu um erro!",
-    //         type: "error",
-    //         position: "top-right",
-    //         // all of other options may go here
-    //       });
-    //     });
-    // },
-    // atualizar() {
-    //   window.axios
-    //     .put(`${localHost}/api/v1/products/${this.id}`, {
-    //       name: this.name,
-    //       url: this.url,
-    //       description: this.description,
-    //       price: this.price,
-    //       image: this.image,
-    //     })
-    //     .then((res) => {
-    //       Vue.$toast.open({
-    //         message: "Categoria atualizada!",
-    //         type: "success",
-    //         position: "top-right",
-    //         // all of other options may go here
-    //       });
-    //       this.listCategories();
-    //       this.fecharModal();
-    //     })
-    //     .catch((erro) => {
-    //       Vue.$toast.open({
-    //         message: "Ocorreu um erro!",
-    //         type: "error",
-    //         position: "top-right",
-    //         // all of other options may go here
-    //       });
-    //     });
-    // },
+          this.list();
+          this.fecharModal();
+        })
+        .catch((erro) => {
+          Vue.$toast.open({
+            message: erro.response.data.msg,
+            type: "error",
+            position: "top-right",
+            // all of other options may go here
+          });
+        });
+    },
+    deletar(id) {
+      window.axios
+        .delete(`${localHost}/api/v1/users/${id}`, this.sendData)
+        .then((res) => {
+          Vue.$toast.open({
+            message: "Cadastro removido!",
+            type: "success",
+            position: "top-right",
+            // all of other options may go here
+          });
+          this.list();
+        })
+        .catch((erro) => {
+          Vue.$toast.open({
+            message: erro.response.data.msg,
+            type: "error",
+            position: "top-right",
+            // all of other options may go here
+          });
+        });
+    },
+    atualizar() {
+      window.axios
+        .put(`${localHost}/api/v1/users/${this.id}`, {
+          name: this.name,
+          email: this.email,
+          password:this.password
+        })
+        .then((res) => {
+          Vue.$toast.open({
+            message: "Cadastro atualizado!",
+            type: "success",
+            position: "top-right",
+            // all of other options may go here
+          });
+          this.listCategories();
+          this.fecharModal();
+        })
+        .catch((erro) => {
+          Vue.$toast.open({
+            message: erro.response.data.msg,
+            type: "error",
+            position: "top-right",
+            // all of other options may go here
+          });
+        });
+    },
     fecharModal() {
       $(".close").trigger("click");
     },
     limparModal() {
       this.name = "";
       this.email = "";
+      this.password = "";
     },
     titleModal(name) {
       $(".modal-title").text(name);
     },
-    editarDados(name, email) {
+    editarDados(name, email,password) {
       this.name = name;
       this.email = email;
+      this.password = password;
       this.cadastro = false;
       this.titleModal("Editar dados");
       $("#myModal").modal();
