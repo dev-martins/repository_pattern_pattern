@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\support\Facades\DB;
-use Illuminate\Http\Request;
 use App\Models\Category;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUpdateCategory;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
 
@@ -28,10 +27,6 @@ class CategoriesController extends Controller
         }
     }
 
-    /**
-     * retorna categoria pelo id
-     */
-
     public function getCategory($id)
     {
         try {
@@ -42,39 +37,15 @@ class CategoriesController extends Controller
         }
     }
 
-    /**
-     * Filtro avançado de categorias
-     */
-
     public function searchCategory(Request $request)
     {
         try {
-            $data = $request->all();
-            $categories = DB::table('categories')
-                ->where(function ($query) use ($data) {
-
-                    if (isset($data['title'])) {
-                        $query->where('title', $data['title']);
-                    }
-
-                    if (isset($data['url'])) {
-                        $query->where('url', $data['url']);
-                    }
-
-                    if (isset($data['description'])) {
-                        $query->where('description', 'LIKE', "%{$data['description']}%");
-                    }
-                })->orderBy('id', 'DESC')->paginate(10);
-
+            $categories = $this->repository->search($request->all());
             return response()->json($categories, 200);
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 500);
         }
     }
-
-    /**
-     * cadastrando categorias
-     */
 
     public function createCategory(CreateUpdateCategory $request)
     {
@@ -86,23 +57,19 @@ class CategoriesController extends Controller
         }
     }
 
-    /**
-     * remover category
-     */
-
     public function deleteCategory($id)
     {
         try {
-            $this->repository->delete($id);
-            return response()->json([], 200);
+            if ($this->repository->productsByCategory($id) > 0) {
+                $this->repository->delete($id);
+                return response()->json([], 200);
+            } else {
+                return response()->json(['msg' => 'Categoria contém produtos vinculados!'], 403);
+            }
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 500);
         }
     }
-
-    /**
-     * editar category
-     */
 
     public function updateCategory(CreateUpdateCategory $request, $id)
     {

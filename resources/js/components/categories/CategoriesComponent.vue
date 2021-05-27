@@ -250,7 +250,7 @@ export default {
         })
         .catch((erro) => {
           Vue.$toast.open({
-            message: erro.response.data,
+            message: erro.response.data.msg,
             type: "error",
             position: "top-right",
             // all of other options may go here
@@ -271,7 +271,7 @@ export default {
         })
         .catch((erro) => {
           Vue.$toast.open({
-            message: "Ocorreu um erro!",
+            message: erro.response.data.msg,
             type: "error",
             position: "top-right",
             // all of other options may go here

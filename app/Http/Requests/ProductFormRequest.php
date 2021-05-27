@@ -25,7 +25,7 @@ class ProductFormRequest extends FormRequest
     {
         return [
             'name'  => "required|min:3|max:100|unique:products,name,{$this->id},id",
-            'url'   => "required|min:3|max:100|unique:products,url,{$this->id},id",
+            // 'url'   => "required|min:3|max:100|unique:products,url,{$this->id},id",
             'price' => "required",
             'image' => "required|unique:products,image,{$this->id},id",
             'description'   => 'max:9000',

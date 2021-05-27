@@ -21,35 +21,21 @@
       <thead>
         <tr>
           <th>Nome</th>
-          <th>Preço</th>
-          <th>Imagem</th>
+          <th>Email</th>
           <th>Ações</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="product in products" :key="product.id">
-          <td>{{ product.name }}</td>
-          <td>{{ money(product.price, 1) }}</td>
-          <td style="padding: 0">
-            <p class="text-center" style="margin-bottom: 0">
-              <img
-                src="/vendor/adminlte/dist/img/AdminLTELogo.png"
-                alt=""
-                width="55px"
-              />
-            </p>
-          </td>
+        <tr v-for="user in users" :key="user.id">
+          <td>{{ user.name }}</td>
+          <td>{{ user.email, 1 }}</td>
           <td class="btn-group d-flex flex-row justify-content-center">
             <button
               class="btn btn-primary"
               @click="
                 editarDados(
-                  product.name,
-                  product.url,
-                  product.description,
-                  product.id,
-                  money(product.price, 1),
-                  product.image
+                  user.name,
+                  user.email,
                 )
               "
             >
@@ -59,18 +45,14 @@
               class="btn btn-success"
               @click="
                 editarDados(
-                  product.name,
-                  product.url,
-                  product.description,
-                  product.id,
-                  money(product.price, 1),
-                  product.image
+                  user.name,
+                  user.email,
                 )
               "
             >
               <i class="far fa-eye" style="color: white"></i>
             </button>
-            <button class="btn btn-danger" @click="deletar(product.id)">
+            <button class="btn btn-danger" @click="deletar(user.id)">
               <i class="far fa-trash-alt"></i>
             </button>
           </td>
@@ -79,8 +61,7 @@
       <tfoot>
         <tr>
           <th>Nome</th>
-          <th>Preço</th>
-          <th>Imagem</th>
+          <th>Email</th>
           <th>Ações</th>
         </tr>
       </tfoot>
@@ -215,28 +196,15 @@ var localHost = "http://127.0.0.1:8000";
 export default {
   data() {
     return {
-      products: [],
+      users: [],
       cadastro: true,
-      category_selected:"",
       name: "",
-      url: "",
+      email: "",
       id: "",
-      price: "",
-      description: "",
-      options: {
-        year: "numeric",
-        month: "numeric",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-        second: "numeric",
-        hour12: false,
-        timeZone: "America/Sao_Paulo",
-      },
     };
   },
   mounted() {
-    this.listCategories();
+    this.list();
   },
   methods: {
     loadTable() {
@@ -251,11 +219,11 @@ export default {
         retrieve: true,
       });
     },
-    listCategories: function () {
+    list: function () {
       window.axios
-        .get(`${localHost}/api/v1/products`)
+        .get(`${localHost}/api/v1/users`)
         .then((res) => {
-          this.products = res.data;
+          this.users = res.data;
           setTimeout(() => {
             this.loadTable();
           }, 100);
@@ -269,124 +237,106 @@ export default {
           });
         });
     },
-    createCategory() {
-      this.sendData = new FormData();
-      this.name == "" ? "" : this.sendData.append("name", this.name);
-      this.price == "" ? "" : this.sendData.append("price", this.price);
-      this.image == "" ? "" : this.sendData.append("image", this.image);
-      this.url == "" ? "" : this.sendData.append("url", this.url);
-      this.category_selected == ""
-        ? ""
-        : this.sendData.append("category_id", this.category_selected);
-      this.description == ""
-        ? ""
-        : this.sendData.append("description", this.description);
+    // createCategory() {
+    //   this.sendData = new FormData();
+    //   this.name == "" ? "" : this.sendData.append("name", this.name);
+    //   this.price == "" ? "" : this.sendData.append("price", this.price);
+    //   this.image == "" ? "" : this.sendData.append("image", this.image);
+    //   this.url == "" ? "" : this.sendData.append("url", this.url);
+    //   this.category_selected == ""
+    //     ? ""
+    //     : this.sendData.append("category_id", this.category_selected);
+    //   this.description == ""
+    //     ? ""
+    //     : this.sendData.append("description", this.description);
 
-      window.axios
-        .post(`${localHost}/api/v1/products`, this.sendData)
-        .then((res) => {
-          Vue.$toast.open({
-            message: res.data.msg,
-            type: "success",
-            position: "top-right",
-            // all of other options may go here
-          });
+    //   window.axios
+    //     .post(`${localHost}/api/v1/products`, this.sendData)
+    //     .then((res) => {
+    //       Vue.$toast.open({
+    //         message: res.data.msg,
+    //         type: "success",
+    //         position: "top-right",
+    //         // all of other options may go here
+    //       });
 
-          this.listCategories();
-          this.fecharModal();
-        })
-        .catch((erro) => {
-          Vue.$toast.open({
-            message: erro.response.data,
-            type: "error",
-            position: "top-right",
-            // all of other options may go here
-          });
-        });
-    },
-    deletar(id) {
-      window.axios
-        .delete(`${localHost}/api/v1/products/${id}`, this.sendData)
-        .then((res) => {
-          Vue.$toast.open({
-            message: "Produto removido!",
-            type: "success",
-            position: "top-right",
-            // all of other options may go here
-          });
-          this.listCategories();
-        })
-        .catch((erro) => {
-          Vue.$toast.open({
-            message: "Ocorreu um erro!",
-            type: "error",
-            position: "top-right",
-            // all of other options may go here
-          });
-        });
-    },
-    atualizar() {
-      window.axios
-        .put(`${localHost}/api/v1/products/${this.id}`, {
-          name: this.name,
-          url: this.url,
-          description: this.description,
-          price: this.price,
-          image: this.image,
-        })
-        .then((res) => {
-          Vue.$toast.open({
-            message: "Categoria atualizada!",
-            type: "success",
-            position: "top-right",
-            // all of other options may go here
-          });
-          this.listCategories();
-          this.fecharModal();
-        })
-        .catch((erro) => {
-          Vue.$toast.open({
-            message: "Ocorreu um erro!",
-            type: "error",
-            position: "top-right",
-            // all of other options may go here
-          });
-        });
-    },
+    //       this.listCategories();
+    //       this.fecharModal();
+    //     })
+    //     .catch((erro) => {
+    //       Vue.$toast.open({
+    //         message: erro.response.data,
+    //         type: "error",
+    //         position: "top-right",
+    //         // all of other options may go here
+    //       });
+    //     });
+    // },
+    // deletar(id) {
+    //   window.axios
+    //     .delete(`${localHost}/api/v1/products/${id}`, this.sendData)
+    //     .then((res) => {
+    //       Vue.$toast.open({
+    //         message: "Produto removido!",
+    //         type: "success",
+    //         position: "top-right",
+    //         // all of other options may go here
+    //       });
+    //       this.listCategories();
+    //     })
+    //     .catch((erro) => {
+    //       Vue.$toast.open({
+    //         message: "Ocorreu um erro!",
+    //         type: "error",
+    //         position: "top-right",
+    //         // all of other options may go here
+    //       });
+    //     });
+    // },
+    // atualizar() {
+    //   window.axios
+    //     .put(`${localHost}/api/v1/products/${this.id}`, {
+    //       name: this.name,
+    //       url: this.url,
+    //       description: this.description,
+    //       price: this.price,
+    //       image: this.image,
+    //     })
+    //     .then((res) => {
+    //       Vue.$toast.open({
+    //         message: "Categoria atualizada!",
+    //         type: "success",
+    //         position: "top-right",
+    //         // all of other options may go here
+    //       });
+    //       this.listCategories();
+    //       this.fecharModal();
+    //     })
+    //     .catch((erro) => {
+    //       Vue.$toast.open({
+    //         message: "Ocorreu um erro!",
+    //         type: "error",
+    //         position: "top-right",
+    //         // all of other options may go here
+    //       });
+    //     });
+    // },
     fecharModal() {
       $(".close").trigger("click");
     },
     limparModal() {
       this.name = "";
-      this.url = "";
-      this.description = "";
-      this.price = "";
+      this.email = "";
     },
     titleModal(name) {
       $(".modal-title").text(name);
     },
-    editarDados(name, url, description, id, price) {
+    editarDados(name, email) {
       this.name = name;
-      this.url = url;
-      this.description = description;
-      this.id = id;
-      this.price = price;
+      this.email = email;
       this.cadastro = false;
       this.titleModal("Editar dados");
       $("#myModal").modal();
-    },
-    convertDateTime(date) {
-      date = date
-        .replace(" ", "-")
-        .replace(":", "-")
-        .replace(":", "-")
-        .replace("T", "-");
-      var arr = date.split("-");
-
-      date = new Intl.DateTimeFormat("default", this.options).format(
-        new Date(arr[0], arr[1] - 1, arr[2], arr[3], arr[4], arr[5])
-      );
-      return date;
     },
     loadJs(url, callback) {
       jQuery.ajax({
@@ -395,22 +345,6 @@ export default {
         success: callback,
         async: true,
       });
-    },
-    money: function (value, a = 0) {
-      if (a == 0) {
-        var str = value;
-        str = str.replace(",", "");
-        var res = str.length - 2;
-        res = str.substr(1, 2);
-        res =
-          str.substr(0, str.length - 2) + "." + str.substr(str.length - 2, 2);
-      } else {
-        var res = value.toLocaleString("pt-BR", {
-          style: "currency",
-          currency: "BRL",
-        });
-      }
-      return res;
     },
   },
 };

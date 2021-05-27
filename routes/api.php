@@ -36,6 +36,15 @@ Route::prefix('v1/products/')->namespace('Admin\\')->group(function () {
     Route::put('{id}', 'ProductsController@updateProduct')->name('updateProduct');
 });
 
+Route::prefix('v1/users/')->namespace('Admin\\')->group(function () {
+    Route::get('', 'UsersController@getUsers')->name('GetUsersApi');
+    Route::get('{id}', 'UsersController@getUser')->name('getUserApi');
+    Route::delete('{id}', 'UsersController@deleteUser')->name('deleteUsersApi');
+    Route::post('', 'UsersController@storeUser')->name('storeUsersApi');
+    Route::put('{id}', 'UsersController@updateUser')->name('updateUserApi');
+    Route::any('search', 'UsersController@searchUser')->name('searchUserApi');
+});
+
 Route::prefix('v1/nexmo/')->namespace('Sms\\')->group(function () {
     Route::post('stripe/webhook', 'WebhookController@handle')->name('webhook');
 });

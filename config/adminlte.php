@@ -238,12 +238,19 @@ return [
         ],
         [
             'text' => 'Categorias',
-            'url'  => '/home',
+            'url'  => '/admin/categories',
             #'can'  => 'manage-blog',
         ],
         [
             'text'        => 'Produtos',
             'url'         => 'admin/products',
+            'icon'        => 'far fa-fw fa-file',
+            //'label'       => 4,
+            'label_color' => 'success',
+        ],
+        [
+            'text'        => 'Usuários',
+            'url'         => 'admin/users',
             'icon'        => 'far fa-fw fa-file',
             //'label'       => 4,
             'label_color' => 'success',

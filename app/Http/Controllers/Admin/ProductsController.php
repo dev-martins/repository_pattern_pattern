@@ -20,7 +20,7 @@ class ProductsController extends Controller
     public function getProducts()
     {
         try {
-            $products = $this->repository->getAll();
+            $products = $this->repository->relationShips('Category')->orderBy('id')->getAll();
             return response()->json($products, 200);
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 500);
@@ -30,7 +30,7 @@ class ProductsController extends Controller
     public function getProduct($id)
     {
         try {
-            $product = $this->repository->findById($id);
+            $product = $this->repository->relationShips('Category')->findById($id);
             return response()->json($product, 200);
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 500);
@@ -41,7 +41,7 @@ class ProductsController extends Controller
     {
         try {
             $this->repository->store($request->all());
-            return response()->json(["msg" => "Produto cadastrado"], 200);
+            return response()->json(["msg" => "Produto cadastrado"], 201);
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 500);
         }
